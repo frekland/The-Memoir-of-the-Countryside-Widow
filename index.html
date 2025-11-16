@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="The Memoir of a Countryside Widow - A literary novella about Eleanor Hartley, exploring early-stage Dementia with Lewy Bodies through phenomenological narrative.">
+    <meta name="author" content="J.L. Scott">
+    <meta property="og:title" content="The Memoir of a Countryside Widow">
+    <meta property="og:description" content="A literary novella by J.L. Scott">
+    <meta property="og:type" content="website">
+    <title>The Memoir of a Countryside Widow by J.L. Scott</title>
+    <style>
+        :root {
+            --bg-color: #fafaf8;
+            --text-color: #2a2a2a;
+            --secondary-text: #666;
+            --accent-color: #8b7355;
+            --border-color: #ddd;
+            --nav-bg: #fff;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #e4e4e4;
+            --secondary-text: #999;
+            --accent-color: #c4a57b;
+            --border-color: #444;
+            --nav-bg: #242424;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Crimson Text', 'Georgia', 'Times New Roman', serif;
+            font-size: var(--font-size, 18px);
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            overscroll-behavior-y: contain;
+        }
+
+        .controls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px var(--shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transform: translateY(0);
+            transition: transform var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .controls.hidden {
+            transform: translateY(-100%);
+        }
+
+        .controls-left {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .controls-right {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            touch-action: manipulation;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            border-radius: 50%;
+        }
+
+        .nav-toggle {
+            background: var(--accent-color);
+        }
+
+        .sidebar {
+            position: fixed;
+            left: -100%;
+            top: 0;
+            width: min(280px, 80vw);
+            height: 100vh;
+            height: 100dvh;
+            background: var(--nav-bg);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: left var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+            box-shadow: 2px 0 20px var(--shadow);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-speed) ease;
+            z-index: 999;
+        }
+
+        .sidebar-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .sidebar h3 {
+            padding: 1.5rem 1rem 1rem;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background: var(--nav-bg);
+            z-index: 1;
+        }
+
+        .chapter-link {
+            display: block;
+            padding: 1rem;
+            color: var(--text-color);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 44px;
+        }
+
+        .chapter-link:active {
+            transform: scale(0.98);
+        }
+
+        .chapter-link:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .chapter-link.active {
+            background: var(--accent-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 80px 1.5rem 3rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+            color: var(--text-color);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--secondary-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .author {
+            font-size: 1.1rem;
+            color: var(--secondary-text);
+            margin-bottom: 3rem;
+        }
+
+        .chapter {
+            margin-bottom: 4rem;
+            scroll-margin-top: 80px;
+        }
+
+        .chapter-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .scene-break {
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--secondary-text);
+            font-size: 1.5rem;
+            letter-spacing: 0.5em;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            text-align: justify;
+            text-indent: 2rem;
+        }
+
+        .no-indent {
+            text-indent: 0;
+        }
+
+        .afterword {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 3px solid var(--accent-color);
+        }
+
+        .afterword-section {
+            margin-bottom: 2rem;
+        }
+
+        .afterword-section h3 {
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .content {
+                padding: 70px 1rem 2rem;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .chapter-title {
+                font-size: 1.5rem;
+            }
+
+            .controls {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .controls-left span {
+                display: none;
+            }
+
+            button {
+                font-size: 12px;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        /* Touch interaction feedback */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+            background-color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading state */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+
+        .pull-indicator {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            transition: transform 0.3s ease;
+            color: var(--accent-color);
+            font-size: 2rem;
+            z-index: 998;
+        }
+
+        .pull-indicator.active {
+            transform: translateX(-50%) translateY(10px);
+        }
+
+        /* Password Gate Styles */
+        .password-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .password-gate.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .password-container {
+            text-align: center;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .password-title {
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .password-subtitle {
+            color: var(--secondary-text);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--nav-bg);
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .password-button {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .password-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .password-button:active {
+            transform: translateY(0);
+        }
+
+        .password-error {
+            color: #d64545;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            min-height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .password-title {
+                font-size: 1.5rem;
+            }
+
+            .password-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Gate -->
+    <div class="password-gate" id="passwordGate">
+        <div class="password-container">
+            <h1 class="password-title">The Memoir of a Countryside Widow</h1>
+            <p class="password-subtitle">Please enter the password to continue</p>
+            <input 
+                type="password" 
+                id="passwordInput" 
+                class="password-input" 
+                placeholder="Enter password"
+                autocomplete="off"
+            />
+            <button onclick="checkPassword()" class="password-button">Enter</button>
+            <p class="password-error" id="passwordError"></p>
+        </div>
+    </div>
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleNav()"></div>
+    
+    <div class="controls" id="controls">
+        <div class="controls-left">
+            <button class="icon-btn nav-toggle" onclick="toggleNav()" aria-label="Menu">☰</button>
+            <span style="color: var(--text-color); font-weight: bold;">The Memoir of a Countryside Widow</span>
+        </div>
+        <div class="controls-right">
+            <button class="icon-btn" onclick="decreaseFont()" aria-label="Decrease font size">A-</button>
+            <button class="icon-btn" onclick="increaseFont()" aria-label="Increase font size">A+</button>
+            <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme">◐</button>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <h3>Table of Contents</h3>
+        <a href="#chapter1" class="chapter-link">Chapter 1: The Coffee Morning</a>
+        <a href="#chapter2" class="chapter-link">Chapter 2: The Diagnosis</a>
+        <a href="#chapter3" class="chapter-link">Chapter 3: The List</a>
+        <a href="#chapter4" class="chapter-link">Chapter 4: The Garden</a>
+        <a href="#chapter5" class="chapter-link">Chapter 5: The Night Visitor</a>
+        <a href="#chapter6" class="chapter-link">Chapter 6: The First Call</a>
+        <a href="#chapter7" class="chapter-link">Chapter 7: The Visit</a>
+        <a href="#chapter8" class="chapter-link">Chapter 8: The Kitchen</a>
+        <a href="#chapter9" class="chapter-link">Chapter 9: The Study</a>
+        <a href="#chapter10" class="chapter-link">Chapter 10: The Stranger</a>
+        <a href="#chapter11" class="chapter-link">Chapter 11: The Hospital</a>
+        <a href="#chapter12" class="chapter-link">Chapter 12: The Return</a>
+        <a href="#chapter13" class="chapter-link">Chapter 13: The First Week</a>
+        <a href="#chapter14" class="chapter-link">Chapter 14: The Rhythm</a>
+        <a href="#chapter15" class="chapter-link">Chapter 15: The Letter</a>
+        <a href="#chapter16" class="chapter-link">Chapter 16: The Walk</a>
+        <a href="#chapter17" class="chapter-link">Chapter 17: The Crisis</a>
+        <a href="#chapter18" class="chapter-link">Chapter 18: The Photograph</a>
+        <a href="#chapter19" class="chapter-link">Chapter 19: The Acceptance</a>
+        <a href="#chapter20" class="chapter-link">Chapter 20: The Wedding</a>
+        <a href="#chapter21" class="chapter-link">Chapter 21: The Garden, Again</a>
+        <a href="#afterword" class="chapter-link">Afterword: The Chain of Data</a>
+    </div>
+
+    <div class="pull-indicator" id="pullIndicator">↓</div>
+
+    <div class="content" id="content">
+        <h1 class="title">The Memoir of a Countryside Widow</h1>
+        <p class="subtitle">A Novella</p>
+        <p class="author">by J.L. Scott</p>
+
+        <!-- 
+            NOTE: For deployment, you'll need to populate this with the full content from 
+            The_Countryside_widow_v5.md or your final manuscript version.
+            
+            This template includes the first two chapters as examples.
+            Add all 21 chapters plus the full afterword before deploying.
+        -->
+
+        <div class="chapter" id="chapter1">
+            <h2 class="chapter-title">Chapter 1: The Coffee Morning</h2>
+            <p>The cup rattled against its saucer. Just a tremor, nothing dramatic. Eleanor Hartley steadied both hands around the porcelain, feeling the heat seep through to her palms. Margaret was mid-sentence, something about the parish council and the new recycling bins, when Eleanor's mind snagged on a word that should have come easily.</p>
+            <p>"You know, the... the thing." She gestured vaguely toward the window. "The tall... structure."</p>
+            <p>"The church tower?" Margaret's eyebrows lifted slightly.</p>
+            <p>"Yes." Eleanor's cheeks warmed. "Of course. The tower."</p>
+            <p>The word had been right there, somewhere behind her tongue, and then it wasn't. Like reaching for a book on a shelf only to find the space empty. The heat in her cheeks spread to her throat. Around the table, conversation continued—Janet discussing her grandson's university prospects, Maureen complaining about the bakery's new prices—but Eleanor felt suddenly separate from it all, watching from behind glass.</p>
+            <p>Her hands trembled again. She set the cup down with more force than intended, tea sloshing over the rim. The brown liquid spread across the white tablecloth, blooming like a stain on fresh snow.</p>
+            <p>"Oh dear," Margaret said, already reaching for a napkin. "No harm done."</p>
+            <p>But there was something in her tone, wasn't there? A carefulness that hadn't been there before. Or perhaps Eleanor was imagining it. Perhaps she was imagining all of it—the missing words, the trembling hands, the sense that something fundamental had shifted in the space between one Thursday morning and the next.</p>
+            <p>She accepted the napkin and dabbed at the spill, avoiding the eyes she felt on her. The conversation had resumed, but the rhythm was different now. More careful. As if they were all pretending not to notice something they couldn't quite name.</p>
+            <p>When Eleanor stood to leave twenty minutes later, her coat seemed heavier than usual. Or perhaps she was simply more aware of its weight, the way she'd become aware of so many small things lately. The effort of buttoning. The concentration required to find her car keys in her handbag, even though they always went in the same pocket.</p>
+            <p>"Same time next week?" Margaret called from the doorway.</p>
+            <p>"Yes," Eleanor said. "Next week."</p>
+            <p>Though already, standing in Margaret's driveway with autumn sun slanting across the gravel, she couldn't quite remember if they'd agreed on Thursday or Friday. The certainty that used to anchor these arrangements had become slippery, like trying to hold water in cupped hands.</p>
+            <p>In the car, she sat for a long moment before starting the engine, staring at the dashboard instruments. Everything familiar. Everything exactly where it should be. And yet.</p>
+            <p>The drive home was only three miles, a route she'd taken thousands of times. But at the roundabout near the post office, she hesitated. Left or right? The answer should have been automatic, muscle memory, but for a breath-stealing moment, it simply wasn't there.</p>
+            <p>Right. It was right. Always had been.</p>
+            <p>She turned the wheel and continued home, hands gripping tighter than necessary, a knot forming in her stomach that she chose, quite deliberately, not to examine too closely.</p>
+            <p>Not yet.</p>
+
+            <div class="scene-break">* * *</div>
+        </div>
+
+        <!-- Add remaining chapters here before deployment -->
+
+        <div class="afterword" id="afterword">
+            <h2 class="chapter-title">Afterword: The Chain of Data</h2>
+            <div class="afterword-section">
+                <h3>On Translation and Truth</h3>
+                <p>This story exists because of a question: What if phenomenological research could be translated into narrative?</p>
+                <p>For years, researchers have documented the lived experience of dementia with extraordinary care. They've interviewed people, listened to their stories, identified themes, published findings in academic journals that most people will never read. That research is rich, nuanced, deeply human—and largely inaccessible to the people who need it most.</p>
+                <p>Eleanor's story is an attempt at translation. Not transcription, but translation—taking the documented phenomenological experience of early-stage Dementia with Lewy Bodies and rendering it in narrative form. Making it accessible. Making it felt.</p>
+            </div>
+
+            <!-- Add full afterword content before deployment -->
+            
+            <div class="afterword-section">
+                <h3>One More Thing</h3>
+                <p>If you or someone you love is experiencing cognitive changes, please reach out for professional support. You don't have to face it alone.</p>
+                <p><strong>Resources:</strong></p>
+                <p class="no-indent" style="padding-left: 2rem;">• Dementia UK: https://www.dementiauk.org/</p>
+                <p class="no-indent" style="padding-left: 2rem;">• Dementia Carers Count: https://dementiacarers.org.uk</p>
+                <p class="no-indent" style="padding-left: 2rem;">• Lewy Body Dementia Association: https://www.lbda.org/</p>
+                <p class="no-indent" style="padding-left: 2rem;">• Age UK: https://www.ageuk.org.uk</p>
+                <p>And remember what Eleanor learned: accepting help isn't failure. It's just life. Human life. The way it's supposed to work.</p>
+                <p>We're all held in place by webs of connection. That's not weakness. That's everything.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password Protection
+        const CORRECT_PASSWORD = 'butterfly';
+        
+        function checkPassword() {
+            const input = document.getElementById('passwordInput');
+            const error = document.getElementById('passwordError');
+            const gate = document.getElementById('passwordGate');
+            
+            if (input.value === CORRECT_PASSWORD) {
+                sessionStorage.setItem('authenticated', 'true');
+                gate.classList.add('hidden');
+                error.textContent = '';
+            } else {
+                error.textContent = 'Incorrect password. Please try again.';
+                input.value = '';
+                input.focus();
+                
+                // Shake animation
+                input.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    input.style.animation = '';
+                }, 500);
+            }
+        }
+
+        // Allow Enter key to submit password
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('passwordInput');
+            if (input) {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        checkPassword();
+                    }
+                });
+                input.focus();
+            }
+
+            // Check if already authenticated
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                document.getElementById('passwordGate').classList.add('hidden');
+            }
+        });
+
+        // Enhanced mobile-friendly interactions
+        let lastScrollTop = 0;
+        let scrollTimeout;
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        // Theme management with smooth transitions
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            addRipple(event);
+        }
+
+        // Font size management
+        let fontSize = parseInt(localStorage.getItem('fontSize')) || 18;
+        document.documentElement.style.setProperty('--font-size', fontSize + 'px');
+
+        function increaseFont() {
+            if (fontSize < 28) {
+                fontSize += 2;
+                document.documentElement.style.setProperty('--font-size', fontSize + 'px');
+                localStorage.setItem('fontSize', fontSize);
+                addRipple(event);
+            }
+        }
+
+        function decreaseFont() {
+            if (fontSize > 14) {
+                fontSize -= 2;
+                document.documentElement.style.setProperty('--font-size', fontSize + 'px');
+                localStorage.setItem('fontSize', fontSize);
+                addRipple(event);
+            }
+        }
+
+        // Smooth navigation with overlay
+        function toggleNav() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const isOpen = sidebar.classList.contains('open');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('visible');
+            
+            // Prevent body scroll when nav is open
+            document.body.style.overflow = isOpen ? '' : 'hidden';
+        }
+
+        // Close nav when clicking a link
+        document.querySelectorAll('.chapter-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('overlay').classList.remove('visible');
+                document.body.style.overflow = '';
+                addRipple(e);
+            });
+        });
+
+        // Auto-hide controls on scroll (mobile)
+        let isScrolling = false;
+        window.addEventListener('scroll', () => {
+            const controls = document.getElementById('controls');
+            const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Clear timeout
+            clearTimeout(scrollTimeout);
+            
+            // Show controls
+            controls.classList.remove('hidden');
+            
+            // Hide controls after scrolling stops (mobile only)
+            if (window.innerWidth <= 768) {
+                scrollTimeout = setTimeout(() => {
+                    if (currentScrollTop > 100) {
+                        controls.classList.add('hidden');
+                    }
+                }, 1500);
+            }
+            
+            lastScrollTop = currentScrollTop;
+            highlightActiveChapter();
+        });
+
+        // Highlight active chapter
+        function highlightActiveChapter() {
+            const chapters = document.querySelectorAll('.chapter');
+            const links = document.querySelectorAll('.chapter-link');
+            
+            let current = '';
+            chapters.forEach(chapter => {
+                const rect = chapter.getBoundingClientRect();
+                if (rect.top <= 150) {
+                    current = chapter.getAttribute('id');
+                }
+            });
+
+            links.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Ripple effect for touch feedback
+        function addRipple(e) {
+            const button = e.currentTarget;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+            
+            button.style.position = 'relative';
+            button.style.overflow = 'hidden';
+            button.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        // Add ripple to all buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', addRipple);
+        });
+
+        // Touch gestures for navigation
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeDistance = touchStartY - touchEndY;
+            const minSwipeDistance = 50;
+            
+            // Swipe detection logic (for future enhancements)
+            if (Math.abs(swipeDistance) > minSwipeDistance) {
+                // Can be used for chapter navigation
+            }
+        }
+
+        // Load saved theme with prefers-color-scheme support
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+
+        // Tap to show controls on mobile
+        let tapTimeout;
+        document.getElementById('content').addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && !e.target.closest('a, button')) {
+                const controls = document.getElementById('controls');
+                controls.classList.remove('hidden');
+                
+                clearTimeout(tapTimeout);
+                tapTimeout = setTimeout(() => {
+                    controls.classList.add('hidden');
+                }, 3000);
+            }
+        });
+
+        // Initial chapter highlight
+        highlightActiveChapter();
+
+        // Smooth scroll polyfill for older browsers
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
