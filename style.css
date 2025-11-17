@@ -50,6 +50,16 @@
     --shadow: rgba(255, 255, 255, 0.1);
 }
 
+[data-theme="high-contrast"] {
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --secondary-text: #dddddd;
+    --accent-color: #ffff00;
+    --border-color: #ffffff;
+    --nav-bg: #000000;
+    --shadow: rgba(255, 255, 255, 0.2);
+}
+
 * {
     margin: 0;
     padding: 0;

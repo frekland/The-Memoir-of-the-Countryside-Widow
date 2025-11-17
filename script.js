@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.text())
         .then(data => {
             document.getElementById('content').innerHTML = data;
+            attachSmoothScroll(); // Attach scroll listeners after content is loaded
         });
 
     // Load saved font
@@ -55,6 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sessionStorage.getItem('authenticated') === 'true') {
         document.getElementById('passwordGate').classList.add('hidden');
     }
+
+    document.addEventListener('fullscreenchange', () => {
+        if (document.fullscreenElement) {
+            document.body.classList.add('zen-mode');
+        } else {
+            document.body.classList.remove('zen-mode');
+        }
+    });
 });
 
 // Enhanced mobile-friendly interactions
@@ -64,7 +73,7 @@ let touchStartY = 0;
 let touchEndY = 0;
 
 // Theme management with smooth transitions
-const themes = ['light', 'dark', 'sepia', 'super-dark'];
+const themes = ['light', 'dark', 'sepia', 'super-dark', 'high-contrast'];
 let currentThemeIndex = 0;
 
 function toggleTheme() {
@@ -87,7 +96,15 @@ function changeFont() {
 }
 
 function toggleZenMode() {
-    document.body.classList.toggle('zen-mode');
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
     addRipple(event);
 }
 
@@ -269,15 +286,17 @@ document.getElementById('content').addEventListener('click', (e) => {
 highlightActiveChapter();
 
 // Smooth scroll polyfill for older browsers
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
+function attachSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
     });
-});
+}
